@@ -3,6 +3,7 @@ from git import Actor
 class Person():
     def __init__(self, name, email):
         self.__actor = Actor(name, email)
+        self.__address = (None, None)
 
     @property
     def actor(self):
@@ -15,6 +16,13 @@ class Person():
     @property
     def email(self):
         return self.__actor.email
+
+    @property
+    def address(self):
+        return self.__address
+
+    def set_address(self, street, number):
+        self.__address = (street, number)
 
     def __lt__(self, other):
         return self.name < other.name

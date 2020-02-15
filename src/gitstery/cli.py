@@ -1,7 +1,7 @@
 from os import environ, urandom
 from itertools import chain
 from pathlib import Path
-from random import seed
+from random import seed, choice, choices, randrange
 from shutil import rmtree
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho
 from git import Repo
@@ -31,6 +31,36 @@ def generate(repo_dir, force, seed_value):
 
     everyone = list(sorted(chain(
         [MAYOR, ])))
+
+    addresses = {
+        'Badgers Dene': randrange(40, 200) * [None, ],
+        'Balcombe Close': randrange(40, 200) * [None, ],
+        'Beaconside': randrange(40, 200) * [None, ],
+        'Bowler Street': randrange(40, 200) * [None, ],
+        'Cliff Place': randrange(40, 200) * [None, ],
+        'Corbet Close': randrange(40, 200) * [None, ],
+        'Down Close': randrange(40, 200) * [None, ],
+        'Glan Road': randrange(40, 200) * [None, ],
+        'Glendale': randrange(40, 200) * [None, ],
+        'Harvey Street': randrange(40, 200) * [None, ],
+        'Holmefield Avenue': randrange(40, 200) * [None, ],
+        'Larch Walk': randrange(40, 200) * [None, ],
+        'Moor End': randrange(40, 200) * [None, ],
+        'Sunningdale Drive': randrange(40, 200) * [None, ],
+        'Tamworth Drive': randrange(40, 200) * [None, ],
+        'Valentia Road': randrange(40, 200) * [None, ],
+        'Ventnor Terrace': randrange(40, 200) * [None, ],
+        'Wantage Close': randrange(40, 200) * [None, ],
+        'Wellswood Gardens': randrange(40, 200) * [None, ],
+        'Wilson Gardens': randrange(40, 200) * [None, ],
+    }
+
+    # Assign "notable" people random addresses. Notice that the street number isn't zero-based.
+    street_assignments = choices(list(addresses.keys()), k=len(everyone))
+    for (person, street_name) in zip(everyone, street_assignments):
+        street_number = choice([i + 1 for (i, p) in enumerate(addresses[street_name]) if p is None])
+        person.set_address(street_name, street_number)
+        addresses[street_name][street_number - 1] = person
 
     repo_dir = Path(repo_dir)
     if repo_dir.exists():
