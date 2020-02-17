@@ -3,6 +3,7 @@ from itertools import chain
 from pathlib import Path
 from random import seed, choice, choices, randrange
 from shutil import rmtree
+from csv import DictWriter
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho
 from git import Repo
 from .defines import DATA_DIR, DATE_START
@@ -92,6 +93,22 @@ def generate(repo_dir, force, seed_value):
     repo.index.add(
         p.as_posix() for p in repo_root.glob('**/*')
         if p.is_file() and '.git' not in p.parts)
+
+    echo('Writing residents file')
+    residents = repo_root / 'residents.txt'
+    with residents.open('w') as residents_csv:
+        writer = DictWriter(
+            residents_csv,
+            fieldnames=('Name', 'Address', ),
+            dialect='excel-tab',
+            lineterminator='\n')
+        writer.writeheader()
+        for person in sorted(chain(*addresses.values())):
+            writer.writerow({
+                'Name': person.name,
+                'Address': f'{person.address[1]} {person.address[0]}',
+            })
+    repo.index.add(residents.as_posix())
 
     git_commit(repo, MAYOR, DATE_START, 'Git Town')
 
