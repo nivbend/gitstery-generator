@@ -4,12 +4,13 @@ from pathlib import Path
 from random import seed, choice, choices, randrange
 from shutil import rmtree
 from csv import DictWriter
-from click import Path as ClickPath, group, argument, option, confirm, echo, secho
+from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
 from git import Repo
 from .defines import DATA_DIR, DATE_START
 from .people import MAYOR
 from .fillers import random_people
 from .git_utils import git_commit
+from .phases import PHASES_COUNT
 
 @group()
 def cli():
@@ -25,7 +26,9 @@ def cli():
 @option('--force', '-f', is_flag=True, help='Override directory even if exists.')
 @option('--seed', '-s', 'seed_value', type=bytes.fromhex, metavar='SEED', envvar='GITSTERY_SEED',
     help='Set random seed for reproducible runs.')
-def generate(repo_dir, force, seed_value):
+@option('--phase', '-p', 'chosen_phases', type=IntRange(1, PHASES_COUNT), default=[], show_default=f'1..{PHASES_COUNT}',
+        metavar='INDEX', multiple=True, help='Generate only selected phases.')
+def generate(repo_dir, force, seed_value, chosen_phases):
     """Generate a git repository of a Git Murder Mystery."""
     seed_value = seed_value if seed_value else urandom(10)
     echo(f'Using seed {seed_value.hex()}')
@@ -111,5 +114,16 @@ def generate(repo_dir, force, seed_value):
     repo.index.add(residents.as_posix())
 
     git_commit(repo, MAYOR, DATE_START, 'Git Town')
+
+    phases = (
+    )
+    chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
+    for (i, phase) in enumerate(phases):
+        if i + 1 not in chosen_phases:
+            secho(f'Skipping phase #{i + 1}', fg='cyan')
+            continue
+
+        secho(f'Phase #{i + 1}', fg='magenta')
+        phase()
 
     secho('Done', fg='green')
