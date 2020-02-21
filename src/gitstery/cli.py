@@ -12,7 +12,7 @@ from .defines import DATA_DIR, DATE_START, DATE_REPORT_WEEK_START, POLICE_BRANCH
 from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS, FACTORY_WORKERS
 from .fillers import random_people
 from .git_utils import git_commit
-from .phases import PHASES_COUNT, build_phase_1, build_phase_2
+from .phases import PHASES_COUNT, build_phase_1, build_phase_2, build_phase_3
 
 @group()
 def cli():
@@ -130,6 +130,7 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
         phases = (
             lambda: build_phase_1(repo),
             lambda: build_phase_2(repo),
+            lambda: build_phase_3(repo, addresses),
         )
         chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
         for (i, phase) in enumerate(phases):

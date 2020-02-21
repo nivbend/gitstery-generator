@@ -4,3 +4,7 @@ The detective, {detective}, said the crime scene report is on the `{police_branc
 doesn't really remember the report ID... But he knows it was the first report he submitted after his
 son's ninth birthday (which was {reference_date}), and it was the only report he submitted that
 week.
+
+When you find a suspect, you'd probably want to interview them. To do that, first find out their
+address. To go to that street, look for the street's name in the repository (Hint: it's a tag). To
+go to house number N on that street, go to the Nth parent.
