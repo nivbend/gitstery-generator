@@ -1,6 +1,6 @@
-from click import progressbar
-from ..defines import DATE_START
-from ..people import MAYOR
+from click import echo, progressbar
+from ..defines import DATA_DIR, DATE_START
+from ..people import MAYOR, SUSPECTS
 from ..fillers import random_paragraphs
 from ..git_utils import git_commit, restore_head
 
@@ -30,9 +30,15 @@ def build_phase_3(repo, addresses):
             with progressbar(length=len(street_residents) + 1,
                     label=f'Generating street commits: {street_name}') as bar:
                 for (i, person) in enumerate(reversed(street_residents)):
+                    if person in SUSPECTS:
+                        interview_path = DATA_DIR / f'interview-{SUSPECTS.index(person) + 1}.txt'
+                        interview = interview_path.read_text()
+                    else:
+                        interview = random_paragraphs()
+
                     git_commit(repo, MAYOR, DATE_START,
                         f'{len(street_residents) - i} {street_name}',
-                        random_paragraphs())
+                        interview)
                     bar.update(1)
 
                 # Create the tag to the "beginning" of the street.
@@ -40,3 +46,8 @@ def build_phase_3(repo, addresses):
                 street_tag_name = street_name.lower().replace(' ', '_')
                 repo.create_tag(f'street/{street_tag_name}')
                 bar.update(1)
+
+            for (i, suspect) in enumerate(SUSPECTS):
+                if suspect in street_residents:
+                    house_number = street_residents.index(suspect) + 1
+                    echo(f'  Suspect #{i + 1} lives at #{house_number}')
