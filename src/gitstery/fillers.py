@@ -4,6 +4,14 @@ from textwrap import dedent
 from .defines import DATA_DIR
 from .people import Person
 
+def random_ids():
+    past = set()
+    while True:
+        n = randrange(10000, 999999)
+        if n not in past:
+            yield n
+            past.add(n)
+
 def random_people(people_of_interest):
     providers = ['gitgle.com', 'rebase.org', 'committers.org', 'thegit.com', ]
     given_names_path = DATA_DIR / 'given-names.txt'

@@ -34,3 +34,5 @@ class Person():
         return f'<{self.__class__.__name__} {self.name!r}>'
 
 MAYOR = Person('Dolores Wholfump', 'mayor@gittown.gov')
+
+MAIN_DETECTIVE = Person('Kyle Pumbinner', 'kpumbinner@gtpd.gittown.gov')

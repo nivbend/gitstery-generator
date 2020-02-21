@@ -1,1 +1,6 @@
 A murder had been committed in Git Town!
+
+The detective, {detective}, said the crime scene report is on the `{police_branch}` branch. He
+doesn't really remember the report ID... But he knows it was the first report he submitted after his
+son's ninth birthday (which was {reference_date}), and it was the only report he submitted that
+week.

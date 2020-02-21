@@ -1,16 +1,18 @@
 from os import environ, urandom
 from itertools import chain
 from pathlib import Path
+from datetime import timedelta
 from random import seed, choice, choices, randrange
 from shutil import rmtree
 from csv import DictWriter
+from inflect import engine
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
 from git import Repo
-from .defines import DATA_DIR, DATE_START
-from .people import MAYOR
+from .defines import DATA_DIR, DATE_START, DATE_REPORT, POLICE_BRANCH
+from .people import MAYOR, MAIN_DETECTIVE
 from .fillers import random_people
 from .git_utils import git_commit
-from .phases import PHASES_COUNT
+from .phases import PHASES_COUNT, build_phase_1
 
 @group()
 def cli():
@@ -36,7 +38,7 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     seed(seed_value)
 
     everyone = list(sorted(chain(
-        [MAYOR, ])))
+        [MAYOR, MAIN_DETECTIVE, ])))
 
     addresses = {
         'Badgers Dene': randrange(40, 200) * [None, ],
@@ -89,9 +91,14 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     repo.description = f'A Git Murder Mystery ({seed_value.hex()})'
     repo_root = Path(repo.working_tree_dir)
 
+    inflect = engine()
     readme = DATA_DIR.joinpath('README.md').read_text()
     repo_root.joinpath('README.md').write_text(readme)
-    instructions = DATA_DIR.joinpath('instructions.txt').read_text()
+    reference_date = DATE_REPORT.replace(hour=0, minute=0) - timedelta(days=DATE_REPORT.weekday() + 2)
+    instructions = DATA_DIR.joinpath('instructions.txt').read_text().format(
+        detective=MAIN_DETECTIVE.name,
+        police_branch=POLICE_BRANCH,
+        reference_date=f'{reference_date:%A, %B} {inflect.ordinal(reference_date.day)}')
     repo_root.joinpath('instructions.txt').write_text(instructions)
 
     repo.index.add(
@@ -118,6 +125,7 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
 
     if not no_phases:
         phases = (
+            lambda: build_phase_1(repo),
         )
         chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
         for (i, phase) in enumerate(phases):
