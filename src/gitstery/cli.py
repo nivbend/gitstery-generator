@@ -13,6 +13,7 @@ from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS, FACTORY_W
 from .fillers import random_people
 from .git_utils import git_commit
 from .phases import PHASES_COUNT, build_phase_1, build_phase_2, build_phase_3
+from .solution import build_solution
 
 @group()
 def cli():
@@ -31,7 +32,8 @@ def cli():
 @option('--phase', '-p', 'chosen_phases', type=IntRange(1, PHASES_COUNT), default=[], show_default=f'1..{PHASES_COUNT}',
         metavar='INDEX', multiple=True, help='Generate only selected phases.')
 @option('--no-phases', '-P', is_flag=True, show_default=True, help="Don't generate any phases.")
-def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
+@option('--no-solution', '-S', is_flag=True, show_default=True, help="Don't generate solution.")
+def generate(repo_dir, force, seed_value, chosen_phases, no_phases, no_solution):
     """Generate a git repository of a Git Murder Mystery."""
     seed_value = seed_value if seed_value else urandom(10)
     echo(f'Using seed {seed_value.hex()}')
@@ -139,5 +141,9 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
                 continue
             secho(f'Phase #{i + 1}', fg='magenta')
             phase()
+
+    if not no_solution:
+        secho('Encoding the solution', fg='magenta')
+        build_solution(repo, addresses)
 
     secho('Done', fg='green')

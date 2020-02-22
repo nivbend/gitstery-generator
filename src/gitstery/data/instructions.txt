@@ -10,3 +10,11 @@ address. To go to that street, look for the street's name in the repository (Hin
 go to house number N on that street, go to the Nth parent. If you'd like to inspect the perimeters,
 you can look into the commit's contents - it'll contain a hash that you can view with certain git
 commands.
+
+Think you found the culprit? Check your answer with the following command:
+
+    echo "John Doe" | git hash-object --stdin | grep -iq -f /dev/stdin <(git show solution) && echo 'You found the murderer!' || echo 'No cigar, chief... Try again.'
+
+Replace John Doe with the name of the suspect that you want to check.
+
+For an extra challenge, try and solve the mystery without ever using `git checkout`.
