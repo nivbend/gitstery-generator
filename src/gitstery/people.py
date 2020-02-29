@@ -1,4 +1,5 @@
 from git import Actor
+from .utils import rot13
 
 class Person():
     def __init__(self, name, email):
@@ -16,6 +17,10 @@ class Person():
     @property
     def email(self):
         return self.__actor.email
+
+    @property
+    def username(self):
+        return self.email.split('@')[0]
 
     @property
     def address(self):
@@ -42,4 +47,11 @@ OTHER_DETECTIVES = [
     Person('Francine Wronchusher', 'fwronchusher@gtpd.gittown.gov'),
     Person('Aldo Chornoost', 'achornoost@gtpd.gittown.gov'),
     Person('Ira Grazzitch', 'igrazzitch@gtpd.gittown.gov'),
+]
+
+# Suspects' names are obfuscated to hide the solution in the source code.
+SUSPECTS = [
+    Person(rot13('Oebpx Fghvpxneq'), rot13('fghvpxneq.oebpx') + '@commitfactory.com'),
+    Person(rot13('Pbfzb Fvjxbax'), rot13('fvjxbax.pbfzb') + '@commitfactory.com'),
+    Person(rot13('Ylaqba Uhfxhccre'), rot13('uhfxhccre.ylaqba') + '@commitfactory.com'),
 ]

@@ -1,1 +1,13 @@
-MAIN REPORT LEADING TO SECOND PHASE.
+Murder took place {days_since_murder} ago, on {murder_date}. Coroner report says it was some time
+between {murder_time_min} and {murder_time_max}.
+
+According to the security guard that sat at the entrance to the factory, on the day of the murder
+no one came through the front door. So that leaves the back door, which requires an RFID card to
+open.
+
+With the help of the factory's IT department I managed to cherry-pick the relevant commits from the
+access log for all the electronically locked facilities on premise. They're on my personal
+'{detective_branch}' branch. But they said the program doesn't have a search
+button... I'll have to sift through it to find who used "{access_point}". I put the log file in the
+evidence folder to look
+through later.

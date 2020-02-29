@@ -1,10 +1,11 @@
 from itertools import chain
 from random import choice
 from click import echo, progressbar
-from ..defines import (DATA_DIR, DATE_END, DATE_REPORT, DATE_REPORT_WEEK_START, POLICE_BRANCH,
-    DATE_REPORT_WEEK_END)
+from inflect import engine
+from ..defines import (DATA_DIR, DATE_END, ACCESS_POINT_OF_INTEREST, DATE_MURDER, DATE_REPORT,
+    DATE_REPORT_WEEK_START, DATE_REPORT_WEEK_END, POLICE_BRANCH)
 from ..people import MAIN_DETECTIVE, OTHER_DETECTIVES
-from ..fillers import random_paragraphs, random_ids, random_datetimes
+from ..fillers import random_paragraphs, random_ids, random_datetime, random_datetimes
 from ..git_utils import git_commit, in_branch
 
 @in_branch(POLICE_BRANCH)
@@ -36,8 +37,23 @@ def build_phase_1(repo):
                 random_paragraphs())
 
     echo('Committing the main crime scene report')
+    inflect = engine()
+    days_since_murder = DATE_REPORT - DATE_MURDER
+    murder_time_min = random_datetime(
+        DATE_MURDER, DATE_MURDER, hour_min=DATE_MURDER.hour - 2, hour_max=DATE_MURDER.hour - 1)
+    murder_time_max = random_datetime(
+        DATE_MURDER, DATE_MURDER, hour_min=DATE_MURDER.hour + 1, hour_max=DATE_MURDER.hour + 2)
     main_report_path = DATA_DIR / 'main-report.txt'
-    main_report = main_report_path.read_text()
+    main_report = main_report_path.read_text().format(
+        days_since_murder=' '.join([
+            f'{inflect.number_to_words(days_since_murder.days)}',
+            f'{inflect.plural("day", days_since_murder.days)}',
+        ]),
+        murder_date=f'{DATE_MURDER:%B} {inflect.ordinal(DATE_MURDER.day)}',
+        murder_time_min=f'{murder_time_min:%H:%M}',
+        murder_time_max=f'{murder_time_max:%H:%M}',
+        detective_branch=f'detectives/{MAIN_DETECTIVE.username}',
+        access_point=ACCESS_POINT_OF_INTEREST)
     git_commit(repo, MAIN_DETECTIVE, DATE_REPORT,
         f'Crime scene report #{next(report_ids)}',
         main_report)

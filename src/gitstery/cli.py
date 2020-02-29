@@ -9,10 +9,10 @@ from inflect import engine
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
 from git import Repo
 from .defines import DATA_DIR, DATE_START, DATE_REPORT_WEEK_START, POLICE_BRANCH
-from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES
+from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS
 from .fillers import random_people
 from .git_utils import git_commit
-from .phases import PHASES_COUNT, build_phase_1
+from .phases import PHASES_COUNT, build_phase_1, build_phase_2
 
 @group()
 def cli():
@@ -39,7 +39,8 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
 
     everyone = list(sorted(chain(
         [MAYOR, MAIN_DETECTIVE, ],
-        OTHER_DETECTIVES)))
+        OTHER_DETECTIVES,
+        SUSPECTS)))
 
     addresses = {
         'Badgers Dene': randrange(40, 200) * [None, ],
@@ -127,6 +128,7 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     if not no_phases:
         phases = (
             lambda: build_phase_1(repo),
+            lambda: build_phase_2(repo),
         )
         chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
         for (i, phase) in enumerate(phases):
