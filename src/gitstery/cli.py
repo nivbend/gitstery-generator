@@ -7,6 +7,7 @@ from click import Path as ClickPath, group, argument, option, confirm, echo, sec
 from git import Repo
 from .defines import DATA_DIR, DATE_START
 from .people import MAYOR
+from .fillers import random_people
 from .git_utils import git_commit
 
 @group()
@@ -61,6 +62,14 @@ def generate(repo_dir, force, seed_value):
         street_number = choice([i + 1 for (i, p) in enumerate(addresses[street_name]) if p is None])
         person.set_address(street_name, street_number)
         addresses[street_name][street_number - 1] = person
+
+    # Fill in remaining addresses with random people.
+    for (street_name, street_residents) in addresses.items():
+        for (i, person) in zip(range(len(street_residents)), random_people(everyone)):
+            if street_residents[i]:
+                continue
+            street_residents[i] = person
+            person.set_address(street_name, street_number)
 
     repo_dir = Path(repo_dir)
     if repo_dir.exists():

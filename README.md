@@ -24,6 +24,11 @@ The following environment variables replace some commonly used values:
 | `GITSTERY_TEMP_DIR`    | The directory in which to generate the new repository     |
 | `GITSTERY_SEED`        | The random seed to use (useful for reproducible "builds") |
 
+# Data
+* English:
+  * List of given names: [Social Security's top 1000 names for 2018](https://www.ssa.gov/OACT/babynames/).
+  * List of surnames: [2000 US Census](https://www.census.gov/topics/population/genealogy/data/2000_surnames.html)
+
 # Acknowledgments
 The "murder mystery" repository this project generates was inspired by similar projects:
 * [SQL Murder Mystery](https://mystery.knightlab.com/).
