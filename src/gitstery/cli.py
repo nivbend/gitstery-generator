@@ -28,7 +28,8 @@ def cli():
     help='Set random seed for reproducible runs.')
 @option('--phase', '-p', 'chosen_phases', type=IntRange(1, PHASES_COUNT), default=[], show_default=f'1..{PHASES_COUNT}',
         metavar='INDEX', multiple=True, help='Generate only selected phases.')
-def generate(repo_dir, force, seed_value, chosen_phases):
+@option('--no-phases', '-P', is_flag=True, show_default=True, help="Don't generate any phases.")
+def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     """Generate a git repository of a Git Murder Mystery."""
     seed_value = seed_value if seed_value else urandom(10)
     echo(f'Using seed {seed_value.hex()}')
@@ -115,15 +116,15 @@ def generate(repo_dir, force, seed_value, chosen_phases):
 
     git_commit(repo, MAYOR, DATE_START, 'Git Town')
 
-    phases = (
-    )
-    chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
-    for (i, phase) in enumerate(phases):
-        if i + 1 not in chosen_phases:
-            secho(f'Skipping phase #{i + 1}', fg='cyan')
-            continue
-
-        secho(f'Phase #{i + 1}', fg='magenta')
-        phase()
+    if not no_phases:
+        phases = (
+        )
+        chosen_phases = set(chosen_phases) if chosen_phases else range(1, len(phases) + 1)
+        for (i, phase) in enumerate(phases):
+            if i + 1 not in chosen_phases:
+                secho(f'Skipping phase #{i + 1}', fg='cyan')
+                continue
+            secho(f'Phase #{i + 1}', fg='magenta')
+            phase()
 
     secho('Done', fg='green')
