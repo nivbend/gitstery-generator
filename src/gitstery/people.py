@@ -55,3 +55,15 @@ SUSPECTS = [
     Person(rot13('Pbfzb Fvjxbax'), rot13('fvjxbax.pbfzb') + '@commitfactory.com'),
     Person(rot13('Ylaqba Uhfxhccre'), rot13('uhfxhccre.ylaqba') + '@commitfactory.com'),
 ]
+
+# Factory workers' names are obfuscated same as the suspects'.
+FACTORY_WORKERS = [
+    Person(rot13('Oehab Cebvmmna'), rot13('cebvmmna.oehab') + '@commitfactory.com'),
+    Person(rot13('Ryiven Cbzznff'), rot13('cbzznff.ryiven') + '@commitfactory.com'),
+    Person(rot13('Senapvar Jbeehccre'), rot13('jbeehccre.senapvar') + '@commitfactory.com'),
+    Person(rot13('Virf Cevagvqqyr'), rot13('cevagvqqyr.virf') + '@commitfactory.com'),
+    Person(rot13('Xriva Urgubex'), rot13('urgubex.xriva') + '@commitfactory.com'),
+    Person(rot13('Xvatfyrl Pbgbyq'), rot13('pbgbyq.xvatfyrl') + '@commitfactory.com'),
+    Person(rot13('Fgreyvat Oenzzre'), rot13('oenzzre.fgreyvat') + '@commitfactory.com'),
+    Person(rot13('Flovy Tybec'), rot13('tybec.flovy') + '@commitfactory.com'),
+]

@@ -9,7 +9,7 @@ from inflect import engine
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
 from git import Repo
 from .defines import DATA_DIR, DATE_START, DATE_REPORT_WEEK_START, POLICE_BRANCH
-from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS
+from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS, FACTORY_WORKERS
 from .fillers import random_people
 from .git_utils import git_commit
 from .phases import PHASES_COUNT, build_phase_1, build_phase_2
@@ -40,7 +40,8 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     everyone = list(sorted(chain(
         [MAYOR, MAIN_DETECTIVE, ],
         OTHER_DETECTIVES,
-        SUSPECTS)))
+        SUSPECTS,
+        FACTORY_WORKERS)))
 
     addresses = {
         'Badgers Dene': randrange(40, 200) * [None, ],
