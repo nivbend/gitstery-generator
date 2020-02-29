@@ -22,6 +22,7 @@ The following environment variables replace some commonly used values:
 | Environment Variable   | Usage                                                     |
 |:-----------------------|:----------------------------------------------------------|
 | `GITSTERY_TEMP_DIR`    | The directory in which to generate the new repository     |
+| `GITSTERY_SEED`        | The random seed to use (useful for reproducible "builds") |
 
 # Acknowledgments
 The "murder mystery" repository this project generates was inspired by similar projects:
