@@ -14,7 +14,7 @@ CONSOLE_SCRIPTS = {
 
 setup(
     name='gitstery-generator',
-    version='0.21.0',
+    version='1.0.0',
     description='A Git murder mystery',
     long_description=Path('README.md').read_text(),
     long_description_content_type='text/markdown',

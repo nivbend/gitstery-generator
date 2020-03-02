@@ -18,6 +18,13 @@ To generate a new repository at `/tmp/gitstery`:
 gitstery generate /tmp/gitstery
 ```
 
+To verify a repository:
+```
+gitstery verify /tmp/gitstery
+gitstery verify https://github.com/nivbend/gitstery.git
+gitstery verify git@github.com:nivbend/gitstery.git
+```
+
 If you have your own fork of the gitstery repository you'd like to update:
 ```
 gitstery push /tmp/gitstery <your repository URL>

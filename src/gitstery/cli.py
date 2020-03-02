@@ -1,9 +1,13 @@
+import sys
 from os import environ, urandom
+from urllib.parse import urlparse
 from itertools import chain
 from pathlib import Path
+from contextlib import contextmanager, nullcontext
 from datetime import timedelta
 from random import seed, choice, choices, randrange
 from shutil import rmtree
+from tempfile import TemporaryDirectory
 from csv import DictWriter
 from inflect import engine
 from click import (Path as ClickPath, group, pass_context, argument, option, prompt, confirm, echo,
@@ -14,7 +18,14 @@ from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS, FACTORY_W
 from .fillers import random_people
 from .git_utils import git_commit
 from .phases import PHASES_COUNT, build_phase_1, build_phase_2, build_phase_3
-from .solution import build_solution
+from .solution import build_solution, verify_repository
+
+@contextmanager
+def clone_repository(url):
+    with TemporaryDirectory() as temporary_directory:
+        echo(f'Cloning {url} to {temporary_directory}')
+        cloned = Repo.clone_from(url, temporary_directory)
+        yield cloned
 
 @group()
 def cli():
@@ -176,3 +187,33 @@ def push(repo, url):
             echo(f'  {ref.local_ref} {summary}')
     finally:
         repo.delete_remote('origin')
+
+@cli.command()
+@argument('repository', envvar='GITSTERY_TARGET_REPO')
+def verify(repository):
+    """Verify a mystery REPOSITORY was built properly."""
+    uri = urlparse(repository)
+    if uri.scheme.lower() in ('http', 'https') or uri.path.startswith('git@'):
+        repo_context = clone_repository(repository)
+    else:
+        try:
+            # This also takes care of `file://` URIs.
+            repo_context = nullcontext(Repo(uri.path))
+        except:
+            echo(f'{repository}: Not a git repository')
+            sys.exit(1)
+
+    with repo_context as repo:
+        if 'master' != repo.head.ref.name:
+            echo('Checking out `master`')
+            repo.heads.master.checkout()
+
+        if repo.head.is_detached:
+            echo("Repository's head is detached")
+            sys.exit(1)
+        if repo.is_dirty():
+            echo('Repository is dirty')
+            sys.exit(1)
+
+        if not verify_repository(repo):
+            sys.exit(1)
