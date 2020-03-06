@@ -12,6 +12,17 @@ pip install gitstery-generator
 ```
 Or clone this repository and then `pip install .`/`python setup.py install`.
 
+# Usage
+To generate a new repository at `/tmp/gitstery`:
+```
+gitstery generate /tmp/gitstery
+```
+
+The following environment variables replace some commonly used values:
+| Environment Variable   | Usage                                                     |
+|:-----------------------|:----------------------------------------------------------|
+| `GITSTERY_TEMP_DIR`    | The directory in which to generate the new repository     |
+
 # Acknowledgments
 The "murder mystery" repository this project generates was inspired by similar projects:
 * [SQL Murder Mystery](https://mystery.knightlab.com/).

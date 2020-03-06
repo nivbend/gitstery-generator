@@ -1,9 +1,20 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
+SRC_DIR = Path('src/gitstery')
+DATA_DIR = SRC_DIR / 'data'
+DATA_FILES = [
+    p.relative_to(SRC_DIR).as_posix()
+    for p in DATA_DIR.glob('**/*')
+    if p.is_file()]
+
+CONSOLE_SCRIPTS = {
+    'gitstery': 'gitstery.cli:cli',
+}
+
 setup(
     name='gitstery-generator',
-    version='0.1.0',
+    version='0.2.0',
     description='A Git murder mystery',
     long_description=Path('README.md').read_text(),
     long_description_content_type='text/markdown',
@@ -14,7 +25,13 @@ setup(
     packages=find_packages('src'),
     package_dir={ '': 'src', },
     include_package_data=True,
+    package_data={
+        'gitstery': DATA_FILES,
+    },
     install_requires=Path('requirements.txt').read_text().splitlines(),
+    entry_points={
+        'console_scripts': [f'{name}={path}' for (name, path) in CONSOLE_SCRIPTS.items()],
+    },
     classifiers=[
         'Development Status :: 1 - Planning',
         'Environment :: Console',
