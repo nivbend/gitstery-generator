@@ -6,7 +6,8 @@ from random import seed, choice, choices, randrange
 from shutil import rmtree
 from csv import DictWriter
 from inflect import engine
-from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
+from click import (Path as ClickPath, group, pass_context, argument, option, prompt, confirm, echo,
+    secho, IntRange)
 from git import Repo
 from .defines import DATA_DIR, DATE_START, DATE_REPORT_WEEK_START, POLICE_BRANCH
 from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES, SUSPECTS, FACTORY_WORKERS
@@ -33,7 +34,12 @@ def cli():
         metavar='INDEX', multiple=True, help='Generate only selected phases.')
 @option('--no-phases', '-P', is_flag=True, show_default=True, help="Don't generate any phases.")
 @option('--no-solution', '-S', is_flag=True, show_default=True, help="Don't generate solution.")
-def generate(repo_dir, force, seed_value, chosen_phases, no_phases, no_solution):
+@option('--push', 'push_remote', is_flag=True, show_default=True, help='Push to target repository.')
+@option('--target-repository', '--target-repo', '--target', '-t', 'remote_url', metavar='URL',
+    envvar='GITSTERY_TARGET_REPO', help='Target repository.')
+@pass_context
+def generate(ctx, repo_dir, force, seed_value, chosen_phases, no_phases, no_solution, push_remote,
+        remote_url):
     """Generate a git repository of a Git Murder Mystery."""
     seed_value = seed_value if seed_value else urandom(10)
     echo(f'Using seed {seed_value.hex()}')
@@ -146,4 +152,27 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases, no_solution)
         secho('Encoding the solution', fg='magenta')
         build_solution(repo, addresses)
 
+    if push_remote:
+        while not remote_url:
+            remote_url = prompt('Target repository').strip()
+        ctx.invoke(push, repo=repo, url=remote_url)
+
     secho('Done', fg='green')
+
+@cli.command()
+@argument('repo', type=Repo, envvar='GITSTERY_TEMP_DIR')
+@argument('url', envvar='GITSTERY_TARGET_REPO')
+def push(repo, url):
+    """Update the remote repository at URL from the mystery repository at REPO."""
+    if 'origin' in repo.remotes:
+        repo.delete_remote('origin')
+    origin = repo.create_remote('origin', url)
+
+    try:
+        secho(f'Pushing {repo.working_tree_dir} to {url}', fg='magenta')
+        pushed_refs = origin.push(repo.branches, force=True, tags=True)
+        for ref in pushed_refs:
+            summary = ref.summary.strip('\n')
+            echo(f'  {ref.local_ref} {summary}')
+    finally:
+        repo.delete_remote('origin')

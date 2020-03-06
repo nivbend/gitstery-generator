@@ -18,11 +18,21 @@ To generate a new repository at `/tmp/gitstery`:
 gitstery generate /tmp/gitstery
 ```
 
+If you have your own fork of the gitstery repository you'd like to update:
+```
+gitstery push /tmp/gitstery <your repository URL>
+```
+Or:
+```
+gitstery generate --push /tmp/gitstery
+```
+
 The following environment variables replace some commonly used values:
 | Environment Variable   | Usage                                                     |
 |:-----------------------|:----------------------------------------------------------|
 | `GITSTERY_TEMP_DIR`    | The directory in which to generate the new repository     |
 | `GITSTERY_SEED`        | The random seed to use (useful for reproducible "builds") |
+| `GITSTERY_TARGET_REPO` | URL of the remote repository                              |
 
 # Data
 * English:
