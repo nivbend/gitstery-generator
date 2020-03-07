@@ -1,9 +1,19 @@
 from pathlib import Path
+from datetime import timedelta
+from tempfile import NamedTemporaryFile
 from click import echo, progressbar
-from ..defines import DATA_DIR, DATE_START
+from git import Blob
+from ..defines import DATA_DIR, DATE_START, DATE_MURDER
 from ..people import MAYOR, SUSPECTS
-from ..fillers import random_paragraphs
+from ..utils import wrap_paragraphs
+from ..fillers import random_paragraphs, random_ids
 from ..git_utils import git_commit, restore_head
+
+COMMIT_MSG_INVESTIGATIONS = """\
+This branch holds investigations.
+
+You could *try* sifting through it, but it's probably better to know what you're looking for.
+"""
 
 def build_phase_3(repo, addresses):
     """Third phase which requires some "big repository" search skills.
@@ -17,10 +27,13 @@ def build_phase_3(repo, addresses):
     On the other hand, using relative references can at least save us time copying hashes around,
     but can also be useful when using reference ranges (for example to set a commit to rebase on).
 
-    The third and fourth steps in the mystery will lead to player to both reference a given commit
-    as the N-th parent of a known reference, and also display its contents and message using
-    `git show`.
+    The third step in the mystery will lead to player to both reference a given commit as the N-th
+    parent of a known reference, and also display its contents and message using `git show`. The
+    fourth step will use hashes to show that any type of reference can be provided to `git show`.
     """
+    eyewitness_time = DATE_MURDER - timedelta(hours=1)
+    blob_ids = random_ids()
+    blobs = []
     commit_investigation_path = Path(repo.working_tree_dir) / 'investigate'
     for (street_name, street_residents) in addresses.items():
         with restore_head(repo):
@@ -44,7 +57,19 @@ def build_phase_3(repo, addresses):
                         interview = random_paragraphs()
                         investigation = random_paragraphs()
 
-                    commit_investigation_path.write_text(investigation)
+                    # We generate a new blob to be added to the 'investigations' branch later on.
+                    # We have to have the contents under an actual reference, otherwise they won't
+                    # be cloned along with the repository by the player.
+                    with NamedTemporaryFile('w') as investigation_file:
+                        investigation_file.write(wrap_paragraphs(investigation))
+                        investigation_file.flush()
+                        blobs.append(Blob(
+                            repo,
+                            bytes.fromhex(repo.git.hash_object('-w', investigation_file.name)),
+                            mode=Blob.file_mode,
+                            path=str(next(blob_ids))))
+
+                    commit_investigation_path.write_text(blobs[-1].hexsha)
                     repo.index.add(commit_investigation_path.as_posix())
 
                     git_commit(repo, MAYOR, DATE_START,
@@ -62,3 +87,15 @@ def build_phase_3(repo, addresses):
                 if suspect in street_residents:
                     house_number = street_residents.index(suspect) + 1
                     echo(f'  Suspect #{i + 1} lives at #{house_number}')
+
+    # Create a new branch, not connected to the repository's root, which will hold the
+    # investigations texts' commits. If we don't place those commits somewhere addressable, when
+    # the player `git clone`-s the repository they won't get them and cannot solve the mystery.
+    echo('Creating the investigations branch')
+    with restore_head(repo):
+        repo.git.checkout('--orphan', 'investigations')
+        repo.index.remove('*', force=True, working_tree=True)
+        repo.index.add(blobs)
+        git_commit(repo, MAYOR, DATE_START,
+            'Investigations',
+            COMMIT_MSG_INVESTIGATIONS)

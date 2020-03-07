@@ -8,4 +8,5 @@ week.
 When you find a suspect, you'd probably want to interview them. To do that, first find out their
 address. To go to that street, look for the street's name in the repository (Hint: it's a tag). To
 go to house number N on that street, go to the Nth parent. If you'd like to inspect the perimeters,
-you can look into the commit's contents.
+you can look into the commit's contents - it'll contain a hash that you can view with certain git
+commands.
