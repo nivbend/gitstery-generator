@@ -1,3 +1,4 @@
+from pathlib import Path
 from click import echo, progressbar
 from ..defines import DATA_DIR, DATE_START
 from ..people import MAYOR, SUSPECTS
@@ -16,9 +17,11 @@ def build_phase_3(repo, addresses):
     On the other hand, using relative references can at least save us time copying hashes around,
     but can also be useful when using reference ranges (for example to set a commit to rebase on).
 
-    The third step in the mystery will lead to player to both reference a given commit as the N-th
-    parent of a known reference, and also display its contents and message using `git show`.
+    The third and fourth steps in the mystery will lead to player to both reference a given commit
+    as the N-th parent of a known reference, and also display its contents and message using
+    `git show`.
     """
+    commit_investigation_path = Path(repo.working_tree_dir) / 'investigate'
     for (street_name, street_residents) in addresses.items():
         with restore_head(repo):
             # Detach head from current commit. We want only the tag to lead to the "house" commits.
@@ -31,10 +34,18 @@ def build_phase_3(repo, addresses):
                     label=f'Generating street commits: {street_name}') as bar:
                 for (i, person) in enumerate(reversed(street_residents)):
                     if person in SUSPECTS:
-                        interview_path = DATA_DIR / f'interview-{SUSPECTS.index(person) + 1}.txt'
+                        suspect_index = SUSPECTS.index(person) + 1
+                        interview_path = DATA_DIR / f'interview-{suspect_index}.txt'
                         interview = interview_path.read_text()
+                        investigation_path = DATA_DIR / f'investigation-{suspect_index}.txt'
+                        investigation = investigation_path.read_text().format(
+                            eyewitness_time=f'{eyewitness_time:%I%p}'.lstrip('0'))
                     else:
                         interview = random_paragraphs()
+                        investigation = random_paragraphs()
+
+                    commit_investigation_path.write_text(investigation)
+                    repo.index.add(commit_investigation_path.as_posix())
 
                     git_commit(repo, MAYOR, DATE_START,
                         f'{len(street_residents) - i} {street_name}',
