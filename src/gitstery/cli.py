@@ -8,8 +8,8 @@ from csv import DictWriter
 from inflect import engine
 from click import Path as ClickPath, group, argument, option, confirm, echo, secho, IntRange
 from git import Repo
-from .defines import DATA_DIR, DATE_START, DATE_REPORT, POLICE_BRANCH
-from .people import MAYOR, MAIN_DETECTIVE
+from .defines import DATA_DIR, DATE_START, DATE_REPORT_WEEK_START, POLICE_BRANCH
+from .people import MAYOR, MAIN_DETECTIVE, OTHER_DETECTIVES
 from .fillers import random_people
 from .git_utils import git_commit
 from .phases import PHASES_COUNT, build_phase_1
@@ -38,7 +38,8 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     seed(seed_value)
 
     everyone = list(sorted(chain(
-        [MAYOR, MAIN_DETECTIVE, ])))
+        [MAYOR, MAIN_DETECTIVE, ],
+        OTHER_DETECTIVES)))
 
     addresses = {
         'Badgers Dene': randrange(40, 200) * [None, ],
@@ -94,7 +95,7 @@ def generate(repo_dir, force, seed_value, chosen_phases, no_phases):
     inflect = engine()
     readme = DATA_DIR.joinpath('README.md').read_text()
     repo_root.joinpath('README.md').write_text(readme)
-    reference_date = DATE_REPORT.replace(hour=0, minute=0) - timedelta(days=DATE_REPORT.weekday() + 2)
+    reference_date = DATE_REPORT_WEEK_START - timedelta(days=2)
     instructions = DATA_DIR.joinpath('instructions.txt').read_text().format(
         detective=MAIN_DETECTIVE.name,
         police_branch=POLICE_BRANCH,

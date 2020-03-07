@@ -36,3 +36,10 @@ class Person():
 MAYOR = Person('Dolores Wholfump', 'mayor@gittown.gov')
 
 MAIN_DETECTIVE = Person('Kyle Pumbinner', 'kpumbinner@gtpd.gittown.gov')
+OTHER_DETECTIVES = [
+    Person('Angus Wunnard', 'awunnard@gtpd.gittown.gov'),
+    Person('Cybil Dopest', 'cdopest@gtpd.gittown.gov'),
+    Person('Francine Wronchusher', 'fwronchusher@gtpd.gittown.gov'),
+    Person('Aldo Chornoost', 'achornoost@gtpd.gittown.gov'),
+    Person('Ira Grazzitch', 'igrazzitch@gtpd.gittown.gov'),
+]

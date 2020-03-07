@@ -1,7 +1,8 @@
 from itertools import islice
+from datetime import timedelta
 from random import choice, randrange
 from textwrap import dedent
-from .defines import DATA_DIR
+from .defines import DATA_DIR, DATE_START
 from .people import Person
 
 def random_ids():
@@ -50,3 +51,16 @@ def random_paragraphs(count = -1):
     return '\n\n'.join(_paragraphs[index:index + count])
 
 _paragraphs = None
+
+def random_datetime(date_1, date_2=None, /, *, hour_min=8, hour_max=18):
+    (start, end) = (date_1, date_2) if date_2 else (DATE_START, date_1)
+    delta = end - start
+    return start.replace(hour=0, minute=0) + timedelta(
+        days=randrange(delta.days) if 0 < delta.days else 0,
+        hours=randrange(hour_min, hour_max),
+        minutes=randrange(0, 59))
+
+def random_datetimes(count, date_1, date_2 = None, /, *, hour_min=8, hour_max=18):
+    (start, end) = (date_1, date_2) if date_2 else (DATE_START, date_1)
+    return sorted(random_datetime(start, end, hour_min=hour_min, hour_max=hour_max)
+        for _ in range(count))
