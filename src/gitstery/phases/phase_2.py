@@ -27,7 +27,7 @@ def build_phase_2(repo):
     # suspect's interview on the next step.
     (entry_1, entry_2, entry_3, ) = reversed(SUSPECTS)
     access_points = (
-        'DOOR_FRONT_1', 'DOOR_FRONT_2', 'CABINET_34_A', 'CABINET_67_C1', 'MAIN_FREEZER',
+        'GARAGE_1', 'GARAGE_2', 'CABINET_34_A', 'CABINET_67_C1', 'MAIN_FREEZER',
         'BACK_ROOM_231', 'SECURITY_ROOM_1', 'SECURITY_ROOM_2', 'PRINTER_ROOM_76',
     )
 
