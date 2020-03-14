@@ -1,5 +1,5 @@
 from itertools import chain
-from random import choice
+from random import choice, randrange
 from pathlib import Path
 from datetime import timedelta
 from click import progressbar
@@ -31,7 +31,7 @@ def build_phase_2(repo):
         'BACK_ROOM_231', 'SECURITY_ROOM_1', 'SECURITY_ROOM_2', 'PRINTER_ROOM_76',
     )
 
-    chunks = (17, 5, 12, 9)
+    chunks = (randrange(5, 20), randrange(5, 20), randrange(5, 20), randrange(5, 20))
     logs = zip(
         chain((choice(FACTORY_WORKERS) for _ in range(chunks[0])),
               [entry_1, ],
