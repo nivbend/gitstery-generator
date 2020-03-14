@@ -15,7 +15,7 @@ repository and want to "pull" the latest version, it would probably be easiest t
 current version and clone this repository again.
 
 ## Instructions
-Clone this repository:
+Clone this repository (this isn't meant to be solved using GitHub's interface):
 ```bash
 $ git clone https://github.com/nivbend/gitstery.git
 $ cd gitstery/
