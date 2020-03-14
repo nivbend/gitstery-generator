@@ -17,6 +17,10 @@ $ cd gitstery/
 Then follow the instructions in `instructions.txt`.
 
 The mystery was built so that solving it can be done with `git` commands and `git` commands alone.
+If you want a `git` way of reading the instructions, try:
+```bash
+git cat-file blob HEAD:instructions.txt
+```
 
 ## Who is this for?
 The target audience are intermediate `git` users, this is not meant to be a tutorial for `git`
