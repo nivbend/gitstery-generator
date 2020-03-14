@@ -8,6 +8,12 @@ This is a product of another repository, https://github.com/nivbend/gitstery-gen
 contributions are accepted _only_ on that repository and not here. Feel free to post any issues,
 suggestions or pull-requests on the "generator" project and improve this game for everyone!
 
+Also, because this is a randomly-generated repository, sharing "public" history is impossible as it
+gets rewritten every time. So in contrast to most repositories, this one gets updated by
+`git push --force` (though that's usually considered bad practice). If you have a copy of this
+repository and want to "pull" the latest version, it would probably be easiest to just delete the
+current version and clone this repository again.
+
 ## Instructions
 Clone this repository:
 ```bash
