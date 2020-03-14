@@ -4,9 +4,9 @@ A murder had been committed in Git Town!
 To solve it you'll need to muster all your `git` knowledge (or just google a bunch).
 
 ### NOTICE
-This repository does not accept pull requests or changes and might be completely and utterly
-modified in the future without advance notice. If you'd like to make contributions, feel free to
-check the project that generated this repository at https://github.com/nivbend/gitstery-generator.
+This is a product of another repository, https://github.com/nivbend/gitstery-generator. As such,
+contributions are accepted _only_ on that repository and not here. Feel free to post any issues,
+suggestions or pull-requests on the "generator" project and improve this game for everyone!
 
 ## Instructions
 Clone this repository:
