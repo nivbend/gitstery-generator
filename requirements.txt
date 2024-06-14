@@ -1,5 +1,5 @@
 Click==7.0
 gitdb2==2.0.6
-GitPython==3.0.5
+GitPython==3.1.37
 smmap2==2.0.5
 inflect==4.1.0
